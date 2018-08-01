@@ -1,8 +1,7 @@
 let Discord = require('discord.js');
 let client = new Discord.Client();
 function play (conn) {
-    let dispatcher = conn.playFile(`./${process.env.NUM}.mp3`, {passes: 10}, volume: 0.1
-);
+    let dispatcher = conn.playFile(`./${process.env.NUM}.mp3`, {passes: 10, volume: 0.1});
     dispatcher.on('end', () => {
         play(conn);
     });
