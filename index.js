@@ -3,10 +3,14 @@ let client = new Discord.Client();
 function play (conn) {
     let dispatcher = conn.playFile(`./${process.env.NUM}.mp3`, {passes: 10, volume: 0.1});
     dispatcher.on('end', () => {
-        play(conn);
+        setTimeout(() => {
+            play(conn);
+        }, 2000);
     });
     dispatcher.on('error', () => {
-        play(conn);
+        setTimeout(() => {
+            play(conn);
+        }, 2000);
     });
 }
 let arr = [
