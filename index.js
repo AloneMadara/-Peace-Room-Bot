@@ -5,6 +5,9 @@ function play (conn) {
     dispatcher.on('end', () => {
         play(conn);
     });
+    dispatcher.on('error', () => {
+        play(conn);
+    });
 }
 let arr = [
 '473760354787393537','473760521519235072','473760454108512256'
