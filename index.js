@@ -12,8 +12,9 @@ let arr = [
 client.on('ready', () => {
 
     console.log('authorised as ' + client.user.tag );
-    client.channels.get(arr[parseInt(process.env.NUM)-1]).join().then(conn => {
-        play(conn);
-    })
+    if (client.voiceConnections.get('469080709403770883'))
+        play(client.voiceConnections.get('469080709403770883'));
+    else
+        client.channels.get(arr[parseInt(process.env.NUM)-1]).join().then(play);
 });
 client.login(process.env.TOKEN)
