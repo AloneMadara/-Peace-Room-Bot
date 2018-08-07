@@ -4,12 +4,12 @@ function play (conn) {
     let dispatcher = conn.playFile(./${process.env.NUM}.mp3, {passes: 10, volume: 0.1});
     dispatcher.on('end', () => {
         setTimeout(() => {
-            play(client.voiceConnections.get('469080709403770883'));
+            conn.channel.join.then(play);
         }, 2000);
     });
     dispatcher.on('error', () => {
         setTimeout(() => {
-            play(client.voiceConnections.get('469080709403770883'));
+            conn.channel.join.then(play);
         }, 2000);
     });
 }
