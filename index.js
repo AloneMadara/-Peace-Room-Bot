@@ -1,27 +1,26 @@
-let Discord = require('discord.js');
-let client = new Discord.Client();
-function play (conn) {
-    let dispatcher = conn.playFile(`./${process.env.NUM}.mp3`, {passes: 10, volume: 0.1});
-    dispatcher.on('end', () => {
-        setTimeout(() => {
-            play(conn);
-        }, 2000);
-    });
-    dispatcher.on('error', () => {
-        setTimeout(() => {
-            play(conn);
-        }, 2000);
-    });
-}
-let arr = [
-'473760354787393537','473760521519235072','473760454108512256'
-]
-client.on('ready', () => {
+const getD2BuffInfo = id => axios.get(`https://ru.dotabuff.com/players/${id}`).then(response => {
+  if (response.status === 200) {
+    let html = response.data
+    let $ = cheerio.load(html)
 
-    console.log('authorised as ' + client.user.tag );
-    if (client.voiceConnections.get('469080709403770883'))
-        play(client.voiceConnections.get('469080709403770883'));
-    else
-        client.channels.get(arr[parseInt(process.env.NUM)-1]).join().then(play);
-});
-client.login(process.env.TOKEN)
+    return info = {
+      URL: `https://ru.dotabuff.com/players/${id}`,
+      avatar: $('.image-player').attr('src'),
+      nickname: $('.header-content-title h1').text().replace(/Обзор/g, ''),
+      rank: $(".rank-tier-wrapper .leaderboard-rank-value").text(),
+      rankLogo: $('.rank-tier-base').attr('src'),
+      lastgame: $('.header-content-secondary dl:first-child time').text(),
+      rate: {
+        single: parseInt($(".header-content-secondary dl:nth-child(2)").text()),
+        group: parseInt($(".header-content-secondary dl:nth-child(3)").text())
+      },
+      matches: {
+        wins: $('.game-record .wins').text(),
+        losses: $('.game-record .losses').text(),
+        abandons: $('.game-record .abandons').text(),
+        winRate: $('.header-content-secondary dl:last-of-type dd').text()
+      },
+      lastResults: $('.performances-overview').find('.won, .lost').text().replace(/Поражение/g, '☠️').replace(/Победа/g, '🏆')
+    }
+  }
+}).catch(console.error)
